@@ -71,7 +71,10 @@ select {
 
 <script>
 const tg = window.Telegram.WebApp;
-const userId = tg.initDataUnsafe.user.id;
+const userId = tg.initDataUnsafe?.user?.id || 0;
+
+// 👉 ТВОЯ ССЫЛКА (ЗАМЕНИ)
+const SIGNAL_LINK = "https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
 
 function register() {
   fetch('/register', {
@@ -109,10 +112,11 @@ function getSignal() {
       return;
     }
 
+    // ✅ если есть доступ → открыть сайт
+    tg.openLink(SIGNAL_LINK);
+
     document.getElementById('result').innerHTML =
-      `📊 Пара: ${data.pair}<br>
-       ⏱ Таймфрейм: ${data.timeframe}<br>
-       📈 Сигнал: ${data.signal}`;
+      "🚀 Переход на страницу сигнала...";
   });
 }
 </script>
