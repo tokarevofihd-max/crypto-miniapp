@@ -2,139 +2,152 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Crypto Signals ULTRA</title>
+<title>Crypto Signals PRO</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-body{
-margin:0;
-font-family:Inter;
-background:
-radial-gradient(circle at 20% 20%, #1e293b, #020617 60%),
-linear-gradient(120deg,#020617,#0f172a);
-color:white;
-overflow-x:hidden;
+body {
+  margin:0;
+  font-family: Inter, Arial;
+  color:white;
+  background:
+  radial-gradient(circle at 20% 20%, rgba(34,197,94,0.15), transparent 40%),
+  radial-gradient(circle at 80% 30%, rgba(59,130,246,0.15), transparent 40%),
+  radial-gradient(circle at 50% 80%, rgba(168,85,247,0.15), transparent 40%),
+  #020617;
 }
 
-.header{
-text-align:center;
-font-size:28px;
-font-weight:700;
-padding:25px;
-background:linear-gradient(90deg,#22c55e,#4ade80);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.header {
+  padding:30px;
+  font-size:32px;
+  font-weight:700;
+  text-align:center;
+  background: linear-gradient(90deg,#22c55e,#4ade80);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 25px rgba(34,197,94,0.6);
 }
 
-.card{
-background:rgba(30,41,59,0.45);
-backdrop-filter:blur(20px);
-border-radius:20px;
-margin:20px;
-padding:20px;
-box-shadow:0 0 60px rgba(34,197,94,0.15);
-animation:fadeIn .6s ease;
+.card {
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(25px);
+  border-radius:24px;
+  margin:20px;
+  padding:25px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
+  transition:0.3s;
 }
 
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(10px);}
-to{opacity:1;}
+.card:hover {
+  transform:translateY(-4px);
 }
 
-.profile{
-background:#020617;
-padding:15px;
-border-radius:12px;
-margin-bottom:15px;
-font-size:14px;
+.profile, .market {
+  padding:18px;
+  border-radius:14px;
+  background:rgba(2,6,23,0.8);
+  margin-bottom:12px;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
 }
 
-label{font-size:13px; opacity:.7;}
-
-select{
-width:100%;
-padding:16px;
-border-radius:14px;
-border:none;
-background:#020617;
-color:white;
-margin-top:6px;
-font-size:15px;
+select {
+  width:100%;
+  padding:18px;
+  border-radius:14px;
+  border:none;
+  margin-top:10px;
+  background:#020617;
+  color:white;
+  font-size:16px;
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
 }
 
-button{
-width:100%;
-padding:18px;
-border:none;
-border-radius:16px;
-font-size:17px;
-font-weight:600;
-margin-top:15px;
-cursor:pointer;
-transition:.25s;
+button {
+  width:100%;
+  padding:22px;
+  border:none;
+  border-radius:18px;
+  margin-top:15px;
+  font-size:18px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
 }
 
-button:active{transform:scale(.97)}
-
-.btn-primary{
-background:linear-gradient(45deg,#22c55e,#4ade80);
+button:active {
+  transform:scale(0.96);
 }
 
-.btn-secondary{
-background:#1e293b;
+.btn-primary {
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  box-shadow:0 0 30px rgba(34,197,94,0.6);
 }
 
-.signal-box{
-margin-top:15px;
-padding:25px;
-border-radius:16px;
-text-align:center;
-font-size:22px;
-font-weight:600;
+.btn-secondary {
+  background:#1e293b;
+  box-shadow:0 0 15px rgba(255,255,255,0.1);
 }
 
-.buy{background:#052e16;color:#4ade80;}
-.sell{background:#2e0505;color:#f87171;}
-
-.price{
-font-size:24px;
-font-weight:600;
-margin-top:10px;
+.signal-box {
+  margin-top:20px;
+  padding:25px;
+  border-radius:18px;
+  font-size:26px;
+  text-align:center;
+  font-weight:700;
+  letter-spacing:1px;
 }
 
-.status{
-margin-top:10px;
-font-size:14px;
-opacity:.8;
+.buy {
+  background:linear-gradient(135deg,#052e16,#16a34a);
+  color:#4ade80;
+  box-shadow:0 0 30px rgba(34,197,94,0.6);
 }
 
-.timer{
-margin-top:10px;
-font-size:13px;
-opacity:.6;
+.sell {
+  background:linear-gradient(135deg,#2e0505,#dc2626);
+  color:#f87171;
+  box-shadow:0 0 30px rgba(220,38,38,0.6);
 }
 
-.tutorial{
-position:fixed;
-inset:0;
-background:#000000dd;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999;
+.result {
+  margin-top:15px;
+  padding:15px;
+  border-radius:14px;
+  background:#020617;
 }
 
-.tutorial-box{
-background:#020617;
-padding:25px;
-border-radius:15px;
-max-width:320px;
-text-align:center;
+.learn-card {
+  margin-top:12px;
+  padding:15px;
+  border-radius:12px;
+  background:#020617;
+  border:1px solid rgba(255,255,255,0.05);
+}
+
+.tutorial {
+  position:fixed;
+  inset:0;
+  background:#000000ee;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.tutorial-box {
+  background:#020617;
+  padding:30px;
+  border-radius:18px;
+  max-width:340px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(34,197,94,0.3);
 }
 
 </style>
@@ -142,11 +155,12 @@ text-align:center;
 
 <body>
 
-<div class="header">🚀 Crypto Signals ULTRA</div>
+<div class="header">🚀 Crypto Signals PRO</div>
 
 <div class="card">
 
 <div class="profile" id="profile"></div>
+<div class="market" id="market">Loading market...</div>
 
 <label>Валютная пара</label>
 <select id="pair">
@@ -163,14 +177,12 @@ text-align:center;
 <option>60</option>
 </select>
 
-<div class="price" id="price">Цена: —</div>
-<div class="status" id="marketStatus">Market: Loading…</div>
-<div class="timer" id="timer">Следующее обновление: —</div>
-
 <button class="btn-secondary" onclick="register()">👤 Регистрация</button>
-<button id="signalBtn" class="btn-primary" onclick="getSignal()">📈 Получить сигнал</button>
+<button id="signalBtn" class="btn-primary">📈 Получить сигнал</button>
 
 <div id="signalBox"></div>
+<div id="timer" class="result"></div>
+<div id="result" class="result"></div>
 
 </div>
 
@@ -178,14 +190,17 @@ text-align:center;
 <div id="tvchart"></div>
 </div>
 
+<div class="card">
+<h3>📚 Обучение трейдингу</h3>
+<div class="learn-card">📈 BUY — сигнал на рост цены</div>
+<div class="learn-card">📉 SELL — сигнал на падение</div>
+<div class="learn-card">⚠️ Всегда используйте риск менеджмент</div>
+</div>
+
 <div id="tutorial" class="tutorial" style="display:none">
 <div class="tutorial-box">
 <h3>👋 Добро пожаловать</h3>
-<p>
-1️⃣ Зарегистрируйтесь<br>
-2️⃣ Выберите пару<br>
-3️⃣ Получите сигнал
-</p>
+<p>Выберите пару и получите сигнал</p>
 <button class="btn-primary" onclick="closeTutorial()">Начать</button>
 </div>
 </div>
@@ -195,116 +210,74 @@ text-align:center;
 const tg = window.Telegram.WebApp;
 const user = tg.initDataUnsafe?.user;
 
-const SIGNAL_LINK="https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
-
-let registered = localStorage.getItem("registered")==="true";
+let widget;
+let lastPrice=null;
 
 function updateProfile(){
-if(user){
-document.getElementById("profile").innerHTML=
-"👤 "+user.first_name+
-"<br>ID: "+user.id+
-"<br>Status: "+(registered?"✅ Registered":"❌ Not registered");
-}
-}
-updateProfile();
-
-document.getElementById("signalBtn").disabled=!registered;
-
-function register(){
-tg.openLink(SIGNAL_LINK);
-localStorage.setItem("registered","true");
-registered=true;
-document.getElementById("signalBtn").disabled=false;
-updateProfile();
+ if(user){
+  profile.innerHTML="👤 "+user.first_name+"<br>ID: "+user.id+"<br>Status: 🟢 Active";
+ }
 }
 
-function getSignal(){
-
-const pair=document.getElementById('pair').value;
-const price=parseFloat(document.getElementById('price').dataset.value||0);
-
-let signal;
-
-if(price % 2 > 1){
-signal="BUY";
-}else{
-signal="SELL";
+function loadChart(){
+ if(widget) widget.remove();
+ widget=new TradingView.widget({
+  width:"100%",
+  height:400,
+  symbol:"BINANCE:"+pair.value,
+  interval:timeframe.value,
+  container_id:"tvchart",
+  theme:"dark"
+ });
 }
 
-const box=document.getElementById("signalBox");
+async function updateMarket(){
+ const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
+ const data=await res.json();
+ const price=parseFloat(data.price);
 
-if(signal==="BUY"){
-box.innerHTML='<div class="signal-box buy">📈 BUY SIGNAL</div>';
-}else{
-box.innerHTML='<div class="signal-box sell">📉 SELL SIGNAL</div>';
+ let trend="Neutral";
+ if(lastPrice) trend=price>lastPrice?"🟢 Bullish":"🔴 Bearish";
+ lastPrice=price;
+
+ market.innerHTML=`💰 Price: ${price.toFixed(2)}<br>📊 Market: ${trend}`;
 }
 
-}
+async function getSignal(){
+ const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
+ const data=await res.json();
+ const price=parseFloat(data.price);
 
-async function updatePrice(){
+ let signal=price>lastPrice?"BUY":"SELL";
+ lastPrice=price;
 
-const pair=document.getElementById('pair').value;
+ signalBox.innerHTML=signal==="BUY"
+ ? '<div class="signal-box buy">📈 BUY SIGNAL</div>'
+ : '<div class="signal-box sell">📉 SELL SIGNAL</div>';
 
-try{
-const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair}`);
-const data=await res.json();
-
-document.getElementById("price").innerText="Цена: "+parseFloat(data.price).toFixed(2);
-document.getElementById("price").dataset.value=data.price;
-document.getElementById("marketStatus").innerText="Market: LIVE 🟢";
-
-}catch{
-document.getElementById("marketStatus").innerText="Market: Error 🔴";
-}
-
+ startTimer();
 }
 
 function startTimer(){
-
-let seconds=5;
-
-setInterval(()=>{
-seconds--;
-if(seconds<=0) seconds=5;
-document.getElementById("timer").innerText="Следующее обновление: "+seconds+" сек";
-},1000);
-
+ let s=60;
+ const i=setInterval(()=>{
+  s--;
+  timer.innerHTML="⏱ Следующий сигнал через "+s+" сек";
+  if(s<=0){clearInterval(i); timer.innerHTML="✅ Можно получить новый сигнал";}
+ },1000);
 }
 
-setInterval(updatePrice,5000);
-updatePrice();
-startTimer();
-
-function loadChart(){
-new TradingView.widget({
-width:"100%",
-height:420,
-symbol:"BINANCE:"+document.getElementById('pair').value,
-interval:document.getElementById('timeframe').value,
-theme:"dark",
-style:"1",
-container_id:"tvchart"
-});
-}
+signalBtn.onclick=getSignal;
+pair.onchange=()=>{loadChart(); updateMarket();}
+timeframe.onchange=loadChart;
 
 loadChart();
+updateMarket();
+setInterval(updateMarket,5000);
+updateProfile();
 
-document.getElementById("pair").addEventListener("change",()=>{
-updatePrice();
-loadChart();
-});
-
-document.getElementById("timeframe").addEventListener("change",loadChart);
-
-if(!localStorage.getItem("tutorial")){
-document.getElementById("tutorial").style.display="flex";
-}
-
-function closeTutorial(){
-localStorage.setItem("tutorial","true");
-document.getElementById("tutorial").style.display="none";
-}
+if(!localStorage.getItem("tutorial")) tutorial.style.display="flex";
+function closeTutorial(){localStorage.setItem("tutorial","true"); tutorial.style.display="none";}
 
 </script>
 
