@@ -1,1 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crypto Signal</title>
+</head>
+<body>
+  <h1>🚀 Crypto Mini App работает</h1>
+  <button onclick="getSignal()">Получить сигнал</button>
 
+  <pre id="result"></pre>
+
+  <script>
+    async function getSignal() {
+      const res = await fetch('/signal');
+      const data = await res.json();
+      document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
