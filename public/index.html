@@ -2,195 +2,123 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Crypto Signals PRO</title>
+<title>Crypto Signals</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-
 body {
-  margin:0;
-  font-family: Inter, Arial;
-  background: radial-gradient(circle at top,#0f172a,#020617);
-  color:white;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  text-align: center;
+  padding: 20px;
 }
 
-.header {
-  padding:25px;
-  font-size:24px;
-  font-weight:600;
-  text-align:center;
-  background: linear-gradient(90deg,#22c55e,#4ade80);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.card {
-  background: rgba(30,41,59,0.6);
-  backdrop-filter: blur(15px);
-  border-radius:20px;
-  margin:20px;
-  padding:20px;
-  box-shadow:0 0 40px rgba(34,197,94,0.15);
-}
-
-select {
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  border:none;
-  margin-top:10px;
-  background:#020617;
-  color:white;
+h2 {
+  margin-bottom: 20px;
 }
 
 button {
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:14px;
-  margin-top:15px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.2s;
-}
-
-.btn-primary {
   background: linear-gradient(45deg,#22c55e,#4ade80);
-  box-shadow:0 0 20px rgba(34,197,94,0.5);
+  border: none;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  width: 90%;
 }
 
-.btn-secondary {
-  background:#1e293b;
+select {
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px;
+  width: 90%;
+  border: none;
 }
 
-button:active {
-  transform:scale(0.97);
+.card {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
 }
-
-.result {
-  margin-top:15px;
-  padding:15px;
-  border-radius:12px;
-  background:#020617;
-}
-
-/* REGISTER MODAL */
-
-.modal {
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-content {
-  background:#020617;
-  padding:25px;
-  border-radius:20px;
-  width:90%;
-  max-width:400px;
-}
-
-input {
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border-radius:12px;
-  border:none;
-  background:#020617;
-  color:white;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="header">🚀 Crypto Signals PRO</div>
+<h2>🚀 Crypto Signals</h2>
 
-<div class="card">
-
-<label>Валютная пара</label>
 <select id="pair">
-  <option>BTC/USDT</option>
-  <option>ETH/USDT</option>
-  <option>SOL/USDT</option>
+  <option value="BTC/USDT">BTC/USDT</option>
+  <option value="ETH/USDT">ETH/USDT</option>
+  <option value="SOL/USDT">SOL/USDT</option>
 </select>
 
-<label>Таймфрейм</label>
 <select id="timeframe">
-  <option>1m</option>
-  <option>5m</option>
-  <option>15m</option>
-  <option>1h</option>
+  <option value="1m">1 минута</option>
+  <option value="5m">5 минут</option>
+  <option value="15m">15 минут</option>
+  <option value="1h">1 час</option>
 </select>
 
-<button class="btn-secondary" onclick="openRegister()">👤 Личный кабинет</button>
-<button class="btn-primary" onclick="getSignal()">📈 Получить сигнал</button>
+<button onclick="register()">👤 Личный кабинет</button>
+<button onclick="getSignal()">📈 Получить сигнал</button>
 
-<div id="result" class="result"></div>
-
-</div>
-
-<!-- REGISTER MODAL -->
-
-<div id="registerModal" class="modal">
-  <div class="modal-content">
-    <h3>Регистрация</h3>
-    <input id="name" placeholder="Ваше имя">
-    <input id="email" placeholder="Email">
-    <button class="btn-primary" onclick="submitRegister()">Зарегистрироваться</button>
-  </div>
-</div>
+<div id="result" class="card"></div>
 
 <script>
-
 const tg = window.Telegram.WebApp;
-const SIGNAL_LINK = "https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi&redirect=https://t.me/@cryptoo_signals_app_bot/app";
+const userId = tg.initDataUnsafe?.user?.id || 0;
 
-function openRegister(){
-  document.getElementById('registerModal').style.display="flex";
+// 👉 ТВОЯ ССЫЛКА (ЗАМЕНИ)
+const SIGNAL_LINK = "https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
+
+function register() {
+  fetch('/register', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ telegramId: userId })
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById('result').innerHTML =
+      "✅ Вы зарегистрированы!";
+  });
 }
 
-function submitRegister(){
+function getSignal() {
 
-  const name=document.getElementById('name').value;
-  const email=document.getElementById('email').value;
+  const pair = document.getElementById('pair').value;
+  const timeframe = document.getElementById('timeframe').value;
 
-  if(!name || !email){
-    alert("Заполните поля");
-    return;
-  }
+  fetch('/signal', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      telegramId: userId,
+      pair,
+      timeframe
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
 
-  localStorage.setItem("registered","true");
+    if (!data.access) {
+      document.getElementById('result').innerHTML =
+        "❌ Зарегистрируйтесь в личном кабинете";
+      return;
+    }
 
-  document.getElementById('registerModal').style.display="none";
-  document.getElementById('result').innerHTML="✅ Регистрация успешна";
+    // ✅ если есть доступ → открыть сайт
+    tg.openLink(SIGNAL_LINK);
+
+    document.getElementById('result').innerHTML =
+      "🚀 Переход на страницу сигнала...";
+  });
 }
-
-function isRegistered(){
-  return localStorage.getItem("registered")==="true";
-}
-
-function getSignal(){
-
-  if(!isRegistered()){
-    openRegister();
-    document.getElementById('result').innerHTML="❌ Сначала зарегистрируйтесь";
-    return;
-  }
-
-  tg.openLink(SIGNAL_LINK);
-  document.getElementById('result').innerHTML="🚀 Переход к сигналу...";
-}
-
 </script>
 
 </body>
