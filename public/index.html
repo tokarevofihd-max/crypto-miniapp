@@ -8,74 +8,113 @@
 
 <style>
 body {
+  font-family: Arial;
   background: #0f172a;
   color: white;
-  font-family: Arial;
   text-align: center;
   padding: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+button {
+  background: linear-gradient(45deg,#22c55e,#4ade80);
+  border: none;
+  padding: 15px;
+  margin: 10px;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  width: 90%;
+}
+
+select {
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px;
+  width: 90%;
+  border: none;
 }
 
 .card {
   background: #1e293b;
   padding: 20px;
   border-radius: 15px;
-  margin-top: 30px;
-}
-
-.price {
-  font-size: 28px;
-  margin: 10px 0;
-}
-
-.signal {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-button {
   margin-top: 20px;
-  padding: 15px;
-  width: 100%;
-  border-radius: 10px;
-  border: none;
-  font-size: 18px;
-  background: #22c55e;
-  color: white;
-  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📈 Crypto Signals</h1>
+<h2>🚀 Crypto Signals</h2>
 
-<div class="card">
-  <div id="pair">—</div>
-  <div class="price" id="price">—</div>
-  <div class="signal" id="signal">—</div>
+<select id="pair">
+  <option value="BTC/USDT">BTC/USDT</option>
+  <option value="ETH/USDT">ETH/USDT</option>
+  <option value="SOL/USDT">SOL/USDT</option>
+</select>
 
-  <button onclick="getSignal()">Получить сигнал</button>
-</div>
+<select id="timeframe">
+  <option value="1m">1 минута</option>
+  <option value="5m">5 минут</option>
+  <option value="15m">15 минут</option>
+  <option value="1h">1 час</option>
+</select>
+
+<button onclick="register()">👤 Личный кабинет</button>
+<button onclick="getSignal()">📈 Получить сигнал</button>
+
+<div id="result" class="card"></div>
 
 <script>
 const tg = window.Telegram.WebApp;
-tg.expand();
+const userId = tg.initDataUnsafe.user.id;
 
-async function getSignal() {
-  const res = await fetch('/signal');
-  const data = await res.json();
-
-  document.getElementById('pair').innerText = data.pair;
-  document.getElementById('price').innerText = data.price;
-  document.getElementById('signal').innerText = data.signal;
+function register() {
+  fetch('/register', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ telegramId: userId })
+  })
+  .then(res => res.json())
+  .then(() => {
+    document.getElementById('result').innerHTML =
+      "✅ Вы зарегистрированы!";
+  });
 }
 
-// автообновление
-setInterval(getSignal, 5000);
+function getSignal() {
 
-// первый запуск
-getSignal();
+  const pair = document.getElementById('pair').value;
+  const timeframe = document.getElementById('timeframe').value;
+
+  fetch('/signal', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      telegramId: userId,
+      pair,
+      timeframe
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (!data.access) {
+      document.getElementById('result').innerHTML =
+        "❌ Зарегистрируйтесь в личном кабинете";
+      return;
+    }
+
+    document.getElementById('result').innerHTML =
+      `📊 Пара: ${data.pair}<br>
+       ⏱ Таймфрейм: ${data.timeframe}<br>
+       📈 Сигнал: ${data.signal}`;
+  });
+}
 </script>
 
 </body>
