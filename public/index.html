@@ -15,8 +15,6 @@ body {
   color:white;
 }
 
-/* HEADER */
-
 .header {
   padding:25px;
   font-size:24px;
@@ -27,8 +25,6 @@ body {
   -webkit-text-fill-color:transparent;
 }
 
-/* CARD */
-
 .card {
   background: rgba(30,41,59,0.6);
   backdrop-filter: blur(15px);
@@ -37,8 +33,6 @@ body {
   padding:20px;
   box-shadow:0 0 40px rgba(34,197,94,0.15);
 }
-
-/* SELECT */
 
 select {
   width:100%;
@@ -49,8 +43,6 @@ select {
   background:#020617;
   color:white;
 }
-
-/* BUTTON */
 
 button {
   width:100%;
@@ -77,13 +69,43 @@ button:active {
   transform:scale(0.97);
 }
 
-/* RESULT */
-
 .result {
   margin-top:15px;
   padding:15px;
   border-radius:12px;
   background:#020617;
+}
+
+/* REGISTER MODAL */
+
+.modal {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content {
+  background:#020617;
+  padding:25px;
+  border-radius:20px;
+  width:90%;
+  max-width:400px;
+}
+
+input {
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border-radius:12px;
+  border:none;
+  background:#020617;
+  color:white;
 }
 
 </style>
@@ -110,55 +132,63 @@ button:active {
   <option>1h</option>
 </select>
 
-<button class="btn-secondary" onclick="register()">👤 Личный кабинет</button>
+<button class="btn-secondary" onclick="openRegister()">👤 Личный кабинет</button>
 <button class="btn-primary" onclick="getSignal()">📈 Получить сигнал</button>
 
 <div id="result" class="result"></div>
 
 </div>
 
+<!-- REGISTER MODAL -->
+
+<div id="registerModal" class="modal">
+  <div class="modal-content">
+    <h3>Регистрация</h3>
+    <input id="name" placeholder="Ваше имя">
+    <input id="email" placeholder="Email">
+    <button class="btn-primary" onclick="submitRegister()">Зарегистрироваться</button>
+  </div>
+</div>
+
 <script>
 
 const tg = window.Telegram.WebApp;
-const userId = tg.initDataUnsafe?.user?.id || 0;
-
 const SIGNAL_LINK = "https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
 
-function register() {
-  fetch('/register', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({ telegramId:userId })
-  })
-  .then(res=>res.json())
-  .then(()=>{
-    document.getElementById('result').innerHTML="✅ Вы зарегистрированы";
-  });
+function openRegister(){
+  document.getElementById('registerModal').style.display="flex";
 }
 
-function getSignal() {
+function submitRegister(){
 
-  const pair=document.getElementById('pair').value;
-  const timeframe=document.getElementById('timeframe').value;
+  const name=document.getElementById('name').value;
+  const email=document.getElementById('email').value;
 
-  fetch('/signal',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({ telegramId:userId,pair,timeframe })
-  })
-  .then(res=>res.json())
-  .then(data=>{
+  if(!name || !email){
+    alert("Заполните поля");
+    return;
+  }
 
-    if(!data.access){
-      document.getElementById('result').innerHTML="❌ Нужно зарегистрироваться";
-      return;
-    }
+  localStorage.setItem("registered","true");
 
-    tg.openLink(SIGNAL_LINK);
+  document.getElementById('registerModal').style.display="none";
+  document.getElementById('result').innerHTML="✅ Регистрация успешна";
+}
 
-    document.getElementById('result').innerHTML="🚀 Переход к сигналу...";
-  });
+function isRegistered(){
+  return localStorage.getItem("registered")==="true";
+}
 
+function getSignal(){
+
+  if(!isRegistered()){
+    openRegister();
+    document.getElementById('result').innerHTML="❌ Сначала зарегистрируйтесь";
+    return;
+  }
+
+  tg.openLink(SIGNAL_LINK);
+  document.getElementById('result').innerHTML="🚀 Переход к сигналу...";
 }
 
 </script>
