@@ -15,8 +15,6 @@ body {
   color:white;
 }
 
-/* HEADER */
-
 .header {
   padding:25px;
   font-size:24px;
@@ -27,8 +25,6 @@ body {
   -webkit-text-fill-color:transparent;
 }
 
-/* CARD */
-
 .card {
   background: rgba(30,41,59,0.6);
   backdrop-filter: blur(15px);
@@ -37,8 +33,6 @@ body {
   padding:20px;
   box-shadow:0 0 40px rgba(34,197,94,0.15);
 }
-
-/* SELECT */
 
 select {
   width:100%;
@@ -50,8 +44,6 @@ select {
   color:white;
 }
 
-/* BUTTON */
-
 button {
   width:100%;
   padding:16px;
@@ -61,29 +53,58 @@ button {
   font-size:16px;
   font-weight:600;
   cursor:pointer;
-  transition:0.2s;
 }
 
 .btn-primary {
   background: linear-gradient(45deg,#22c55e,#4ade80);
-  box-shadow:0 0 20px rgba(34,197,94,0.5);
 }
 
 .btn-secondary {
   background:#1e293b;
 }
 
-button:active {
-  transform:scale(0.97);
-}
-
-/* RESULT */
-
 .result {
   margin-top:15px;
   padding:15px;
   border-radius:12px;
   background:#020617;
+}
+
+.signal-box {
+  margin-top:15px;
+  padding:20px;
+  border-radius:15px;
+  font-size:20px;
+  text-align:center;
+}
+
+.buy { background:#052e16; color:#4ade80; }
+.sell { background:#2e0505; color:#f87171; }
+
+.profile {
+  margin-bottom:15px;
+  padding:15px;
+  border-radius:12px;
+  background:#020617;
+  font-size:14px;
+}
+
+.tutorial {
+  position:fixed;
+  inset:0;
+  background:#000000dd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+
+.tutorial-box {
+  background:#020617;
+  padding:25px;
+  border-radius:15px;
+  max-width:300px;
+  text-align:center;
 }
 
 </style>
@@ -95,54 +116,120 @@ button:active {
 
 <div class="card">
 
+<div class="profile" id="profile"></div>
+
 <label>Валютная пара</label>
 <select id="pair">
-  <option>BTC/USDT</option>
-  <option>ETH/USDT</option>
-  <option>SOL/USDT</option>
+  <option>BTCUSDT</option>
+  <option>ETHUSDT</option>
+  <option>SOLUSDT</option>
 </select>
 
 <label>Таймфрейм</label>
 <select id="timeframe">
-  <option>1m</option>
-  <option>5m</option>
-  <option>15m</option>
-  <option>1h</option>
+  <option>1</option>
+  <option>5</option>
+  <option>15</option>
+  <option>60</option>
 </select>
 
-<button class="btn-secondary" onclick="register()">👤 Личный кабинет</button>
+<button class="btn-secondary" onclick="register()">👤 Регистрация</button>
+<button id="signalBtn" class="btn-primary" onclick="getSignal()">📈 Получить сигнал</button>
 
-<!-- кнопка сигнала теперь отключена -->
-<button id="signalBtn" class="btn-primary" onclick="getSignal()" disabled>📈 Получить сигнал</button>
+<div id="signalBox"></div>
 
 <div id="result" class="result"></div>
 
 </div>
 
+<div class="card">
+
+<div id="tvchart"></div>
+
+</div>
+
+<div id="tutorial" class="tutorial" style="display:none">
+  <div class="tutorial-box">
+    <h3>👋 Добро пожаловать</h3>
+    <p>1️⃣ Зарегистрируйтесь<br>2️⃣ Выберите пару<br>3️⃣ Получите сигнал</p>
+    <button class="btn-primary" onclick="closeTutorial()">Понятно</button>
+  </div>
+</div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+
 <script>
 
 const tg = window.Telegram.WebApp;
+const user = tg.initDataUnsafe?.user;
 
 const SIGNAL_LINK = "https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
 
-function register() {
+let registered = localStorage.getItem("registered") === "true";
 
-  tg.openLink(SIGNAL_LINK);
-
-  document.getElementById('result').innerHTML="✅ Регистрация открыта";
-
-  // разблокируем кнопку сигнала
-  document.getElementById('signalBtn').disabled=false;
+function updateProfile(){
+  if(user){
+    document.getElementById("profile").innerHTML=
+    "👤 "+user.first_name+"<br>ID: "+user.id+"<br>Status: "+(registered?"✅ Registered":"❌ Not registered");
+  }
 }
 
-function getSignal() {
+updateProfile();
+
+document.getElementById("signalBtn").disabled=!registered;
+
+function register(){
+  tg.openLink(SIGNAL_LINK);
+  localStorage.setItem("registered","true");
+  registered=true;
+  document.getElementById("signalBtn").disabled=false;
+  updateProfile();
+  document.getElementById('result').innerHTML="✅ Регистрация сохранена";
+}
+
+function getSignal(){
 
   const pair=document.getElementById('pair').value;
-  const timeframe=document.getElementById('timeframe').value;
 
-  document.getElementById('result').innerHTML=
-  "📈 Сигнал получен<br><br>Пара: "+pair+"<br>ТФ: "+timeframe;
+  const random=Math.random()>0.5?"BUY":"SELL";
 
+  const box=document.getElementById("signalBox");
+
+  if(random==="BUY"){
+    box.innerHTML='<div class="signal-box buy">📈 BUY SIGNAL</div>';
+  }else{
+    box.innerHTML='<div class="signal-box sell">📉 SELL SIGNAL</div>';
+  }
+
+}
+
+function loadChart(){
+
+  new TradingView.widget({
+    width:"100%",
+    height:400,
+    symbol:"BINANCE:"+document.getElementById('pair').value,
+    interval:document.getElementById('timeframe').value,
+    timezone:"Etc/UTC",
+    theme:"dark",
+    style:"1",
+    container_id:"tvchart"
+  });
+
+}
+
+loadChart();
+
+document.getElementById("pair").addEventListener("change",()=>location.reload());
+document.getElementById("timeframe").addEventListener("change",()=>location.reload());
+
+if(!localStorage.getItem("tutorial")){
+  document.getElementById("tutorial").style.display="flex";
+}
+
+function closeTutorial(){
+  localStorage.setItem("tutorial","true");
+  document.getElementById("tutorial").style.display="none";
 }
 
 </script>
