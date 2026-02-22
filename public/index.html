@@ -16,54 +16,6 @@ body {
   color:white;
 }
 
-/* LOADER */
-
-#loader {
-  position:fixed;
-  inset:0;
-  background:#020617;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
-
-.dots span {
-  animation: blink 1.4s infinite both;
-  font-size:30px;
-}
-
-.dots span:nth-child(2){animation-delay:.2s}
-.dots span:nth-child(3){animation-delay:.4s}
-
-@keyframes blink {
-  0%,80%,100% {opacity:0}
-  40% {opacity:1}
-}
-
-/* ONBOARDING */
-
-#onboarding {
-  position:fixed;
-  inset:0;
-  background:#000000ee;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9998;
-}
-
-.onboard-box {
-  background:#020617;
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  max-width:300px;
-}
-
-/* HEADER */
-
 .header {
   padding:20px;
   text-align:center;
@@ -126,26 +78,24 @@ button {
 .buy { background:#052e16; color:#4ade80; }
 .sell { background:#2e0505; color:#f87171; }
 
+.review {
+  background:#020617;
+  padding:12px;
+  border-radius:12px;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.counter {
+  font-size:18px;
+  margin-top:10px;
+  color:#4ade80;
+}
+
 </style>
 </head>
 
 <body>
-
-<!-- LOADER -->
-<div id="loader">
-  <h2>🚀 Crypto Signals PRO</h2>
-  <div class="dots"><span>•</span><span>•</span><span>•</span></div>
-  <p>Loading market...</p>
-</div>
-
-<!-- ONBOARDING -->
-<div id="onboarding">
-  <div class="onboard-box">
-    <h3 id="onTitle">👋 Добро пожаловать</h3>
-    <p id="onText">Получайте точные сигналы рынка</p>
-    <button class="primary" onclick="nextOnboard()">Далее</button>
-  </div>
-</div>
 
 <div class="header">🚀 Crypto Signals PRO</div>
 
@@ -154,6 +104,7 @@ button {
   <div class="card">
     <h3>Главная</h3>
     <p>Добро пожаловать в приложение</p>
+    <div class="counter">👥 Пользователей онлайн: 24</div>
   </div>
 </div>
 
@@ -193,6 +144,34 @@ button {
   </div>
 </div>
 
+<!-- REVIEWS -->
+<div id="reviews" class="screen">
+  <div class="card">
+    <h3>⭐ Отзывы пользователей</h3>
+
+    <div class="review">
+      <b>Алексей</b>
+      <p>Заработал +120$ за неделю 🔥 очень точные сигналы</p>
+    </div>
+
+    <div class="review">
+      <b>Марина</b>
+      <p>Лучший бот который я пробовала 👍</p>
+    </div>
+
+    <div class="review">
+      <b>CryptoMax</b>
+      <p>Win rate реально высокий, пользуюсь каждый день</p>
+    </div>
+
+    <div class="review">
+      <b>Игорь</b>
+      <p>Сначала не верил, но сигналы реально работают 😎</p>
+    </div>
+
+  </div>
+</div>
+
 <!-- PROFILE -->
 <div id="profile" class="screen">
   <div class="card">
@@ -216,6 +195,7 @@ button {
   <button onclick="show('signal')">📈</button>
   <button onclick="show('chart')">📊</button>
   <button onclick="show('history')">🧾</button>
+  <button onclick="show('reviews')">⭐</button>
   <button onclick="show('profile')">👤</button>
   <button onclick="show('learning')">🎓</button>
 </div>
@@ -273,47 +253,6 @@ function loadChart(){
 renderHistory();
 loadProfile();
 loadChart();
-
-/* LOADER */
-
-setTimeout(()=>{
-  document.getElementById("loader").style.display="none";
-
-  if(!localStorage.getItem("onboardDone")){
-    document.getElementById("onboarding").style.display="flex";
-  }
-
-},1500);
-
-/* ONBOARDING */
-
-let step=0;
-
-function nextOnboard(){
-
-  const titles=[
-    "👋 Добро пожаловать",
-    "📊 Как работает",
-    "🚀 Всё готово"
-  ];
-
-  const texts=[
-    "Получайте точные сигналы рынка",
-    "Выберите пару и получите сигнал",
-    "Начните использовать приложение"
-  ];
-
-  step++;
-
-  if(step>=3){
-    document.getElementById("onboarding").style.display="none";
-    localStorage.setItem("onboardDone","true");
-    return;
-  }
-
-  document.getElementById("onTitle").innerText=titles[step];
-  document.getElementById("onText").innerText=texts[step];
-}
 
 </script>
 
