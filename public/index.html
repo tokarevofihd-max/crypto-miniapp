@@ -2,152 +2,154 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Crypto Signals PRO</title>
+<title>Crypto Signals ULTRA</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://s3.tradingview.com/tv.js"></script>
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+*{box-sizing:border-box}
 
-body {
-  margin:0;
-  font-family: Inter, Arial;
-  color:white;
-  background:
-  radial-gradient(circle at 20% 20%, rgba(34,197,94,0.15), transparent 40%),
-  radial-gradient(circle at 80% 30%, rgba(59,130,246,0.15), transparent 40%),
-  radial-gradient(circle at 50% 80%, rgba(168,85,247,0.15), transparent 40%),
-  #020617;
+body{
+margin:0;
+font-family:Inter,system-ui,Arial;
+background:
+radial-gradient(circle at 20% 20%,#0f172a,#020617 70%),
+linear-gradient(180deg,#020617,#000);
+color:white;
+overflow-x:hidden;
 }
 
-.header {
-  padding:30px;
-  font-size:32px;
-  font-weight:700;
-  text-align:center;
-  background: linear-gradient(90deg,#22c55e,#4ade80);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  text-shadow:0 0 25px rgba(34,197,94,0.6);
+.header{
+text-align:center;
+font-size:28px;
+padding:25px;
+font-weight:700;
+background:linear-gradient(90deg,#22c55e,#4ade80,#22c55e);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+letter-spacing:1px;
 }
 
-.card {
-  background: rgba(15,23,42,0.6);
-  backdrop-filter: blur(25px);
-  border-radius:24px;
-  margin:20px;
-  padding:25px;
-  border:1px solid rgba(255,255,255,0.08);
-  box-shadow:0 10px 40px rgba(0,0,0,0.6);
-  transition:0.3s;
+.card{
+background:rgba(15,23,42,0.6);
+backdrop-filter:blur(20px);
+border-radius:20px;
+margin:15px;
+padding:20px;
+border:1px solid rgba(255,255,255,0.06);
+box-shadow:0 0 40px rgba(34,197,94,0.08);
+animation:fadeIn .6s ease;
 }
 
-.card:hover {
-  transform:translateY(-4px);
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
 }
 
-.profile, .market {
-  padding:18px;
-  border-radius:14px;
-  background:rgba(2,6,23,0.8);
-  margin-bottom:12px;
-  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+.profile{
+background:#020617;
+padding:15px;
+border-radius:12px;
+font-size:14px;
+margin-bottom:15px;
 }
 
-select {
-  width:100%;
-  padding:18px;
-  border-radius:14px;
-  border:none;
-  margin-top:10px;
-  background:#020617;
-  color:white;
-  font-size:16px;
-  box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+.market-box{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#020617;
+padding:15px;
+border-radius:12px;
+margin-bottom:10px;
 }
 
-button {
-  width:100%;
-  padding:22px;
-  border:none;
-  border-radius:18px;
-  margin-top:15px;
-  font-size:18px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.2s;
+.price{
+font-size:24px;
+font-weight:600;
 }
 
-button:active {
-  transform:scale(0.96);
+.status{
+font-size:13px;
+opacity:.7;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg,#22c55e,#16a34a);
-  box-shadow:0 0 30px rgba(34,197,94,0.6);
+select{
+width:100%;
+padding:18px;
+border-radius:14px;
+border:none;
+margin-top:12px;
+background:#020617;
+color:white;
+font-size:16px;
 }
 
-.btn-secondary {
-  background:#1e293b;
-  box-shadow:0 0 15px rgba(255,255,255,0.1);
+button{
+width:100%;
+padding:20px;
+border:none;
+border-radius:16px;
+margin-top:15px;
+font-size:18px;
+font-weight:600;
+cursor:pointer;
+transition:.25s;
 }
 
-.signal-box {
-  margin-top:20px;
-  padding:25px;
-  border-radius:18px;
-  font-size:26px;
-  text-align:center;
-  font-weight:700;
-  letter-spacing:1px;
+button:active{transform:scale(.97)}
+
+.btn-primary{
+background:linear-gradient(135deg,#22c55e,#16a34a);
+box-shadow:0 15px 35px rgba(34,197,94,.35);
 }
 
-.buy {
-  background:linear-gradient(135deg,#052e16,#16a34a);
-  color:#4ade80;
-  box-shadow:0 0 30px rgba(34,197,94,0.6);
+.btn-secondary{
+background:#1e293b;
 }
 
-.sell {
-  background:linear-gradient(135deg,#2e0505,#dc2626);
-  color:#f87171;
-  box-shadow:0 0 30px rgba(220,38,38,0.6);
+.signal-box{
+margin-top:15px;
+padding:25px;
+border-radius:16px;
+text-align:center;
+font-size:22px;
+font-weight:700;
+animation:pulse 2s infinite;
 }
 
-.result {
-  margin-top:15px;
-  padding:15px;
-  border-radius:14px;
-  background:#020617;
+.buy{
+background:#052e16;
+color:#4ade80;
+box-shadow:0 0 25px rgba(34,197,94,.4);
 }
 
-.learn-card {
-  margin-top:12px;
-  padding:15px;
-  border-radius:12px;
-  background:#020617;
-  border:1px solid rgba(255,255,255,0.05);
+.sell{
+background:#2e0505;
+color:#f87171;
+box-shadow:0 0 25px rgba(248,113,113,.4);
 }
 
-.tutorial {
-  position:fixed;
-  inset:0;
-  background:#000000ee;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+@keyframes pulse{
+0%,100%{transform:scale(1)}
+50%{transform:scale(1.02)}
 }
 
-.tutorial-box {
-  background:#020617;
-  padding:30px;
-  border-radius:18px;
-  max-width:340px;
-  text-align:center;
-  box-shadow:0 0 40px rgba(34,197,94,0.3);
+.timer{
+margin-top:10px;
+font-size:13px;
+opacity:.7;
+text-align:center;
+}
+
+.learn{
+margin-top:10px;
+padding:15px;
+border-radius:12px;
+background:#020617;
+font-size:14px;
 }
 
 </style>
@@ -155,21 +157,26 @@ button:active {
 
 <body>
 
-<div class="header">🚀 Crypto Signals PRO</div>
+<div class="header">🚀 Crypto Signals</div>
 
 <div class="card">
 
-<div class="profile" id="profile"></div>
-<div class="market" id="market">Loading market...</div>
+<div id="profile" class="profile"></div>
 
-<label>Валютная пара</label>
+<div class="market-box">
+<div>
+<div class="price" id="price">—</div>
+<div class="status" id="status">Loading market…</div>
+</div>
+<div class="status" id="timer"></div>
+</div>
+
 <select id="pair">
 <option>BTCUSDT</option>
 <option>ETHUSDT</option>
 <option>SOLUSDT</option>
 </select>
 
-<label>Таймфрейм</label>
 <select id="timeframe">
 <option>1</option>
 <option>5</option>
@@ -178,11 +185,9 @@ button:active {
 </select>
 
 <button class="btn-secondary" onclick="register()">👤 Регистрация</button>
-<button id="signalBtn" class="btn-primary">📈 Получить сигнал</button>
+<button id="signalBtn" class="btn-primary" onclick="getSignal()">📈 Получить сигнал</button>
 
 <div id="signalBox"></div>
-<div id="timer" class="result"></div>
-<div id="result" class="result"></div>
 
 </div>
 
@@ -191,93 +196,103 @@ button:active {
 </div>
 
 <div class="card">
-<h3>📚 Обучение трейдингу</h3>
-<div class="learn-card">📈 BUY — сигнал на рост цены</div>
-<div class="learn-card">📉 SELL — сигнал на падение</div>
-<div class="learn-card">⚠️ Всегда используйте риск менеджмент</div>
-</div>
-
-<div id="tutorial" class="tutorial" style="display:none">
-<div class="tutorial-box">
-<h3>👋 Добро пожаловать</h3>
-<p>Выберите пару и получите сигнал</p>
-<button class="btn-primary" onclick="closeTutorial()">Начать</button>
-</div>
+<h3>📚 Обучение</h3>
+<div class="learn">📈 BUY — сигнал на рост</div>
+<div class="learn">📉 SELL — сигнал на падение</div>
+<div class="learn">⚠️ Используйте риск менеджмент</div>
 </div>
 
 <script>
 
 const tg = window.Telegram.WebApp;
+tg.ready();
+
 const user = tg.initDataUnsafe?.user;
 
-let widget;
-let lastPrice=null;
+let registered = localStorage.getItem("registered")==="true";
+
+const SIGNAL_LINK="https://u3.shortink.io/register?utm_campaign=831166&utm_source=affiliate&utm_medium=sr&a=oZKTW7CtCeLnCu&ac=sipi";
 
 function updateProfile(){
- if(user){
-  profile.innerHTML="👤 "+user.first_name+"<br>ID: "+user.id+"<br>Status: 🟢 Active";
- }
+if(user){
+profile.innerHTML="👤 "+user.first_name+"<br>ID: "+user.id+"<br>Status: "+(registered?"✅ Registered":"❌ Not registered");
 }
-
-function loadChart(){
- if(widget) widget.remove();
- widget=new TradingView.widget({
-  width:"100%",
-  height:400,
-  symbol:"BINANCE:"+pair.value,
-  interval:timeframe.value,
-  container_id:"tvchart",
-  theme:"dark"
- });
 }
-
-async function updateMarket(){
- const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
- const data=await res.json();
- const price=parseFloat(data.price);
-
- let trend="Neutral";
- if(lastPrice) trend=price>lastPrice?"🟢 Bullish":"🔴 Bearish";
- lastPrice=price;
-
- market.innerHTML=`💰 Price: ${price.toFixed(2)}<br>📊 Market: ${trend}`;
-}
-
-async function getSignal(){
- const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
- const data=await res.json();
- const price=parseFloat(data.price);
-
- let signal=price>lastPrice?"BUY":"SELL";
- lastPrice=price;
-
- signalBox.innerHTML=signal==="BUY"
- ? '<div class="signal-box buy">📈 BUY SIGNAL</div>'
- : '<div class="signal-box sell">📉 SELL SIGNAL</div>';
-
- startTimer();
-}
-
-function startTimer(){
- let s=60;
- const i=setInterval(()=>{
-  s--;
-  timer.innerHTML="⏱ Следующий сигнал через "+s+" сек";
-  if(s<=0){clearInterval(i); timer.innerHTML="✅ Можно получить новый сигнал";}
- },1000);
-}
-
-signalBtn.onclick=getSignal;
-pair.onchange=()=>{loadChart(); updateMarket();}
-timeframe.onchange=loadChart;
-
-loadChart();
-updateMarket();
-setInterval(updateMarket,5000);
 updateProfile();
 
-if(!localStorage.getItem("tutorial")) tutorial.style.display="flex";
-function closeTutorial(){localStorage.setItem("tutorial","true"); tutorial.style.display="none";}
+signalBtn.disabled=!registered;
+
+function register(){
+tg.openLink(SIGNAL_LINK);
+localStorage.setItem("registered","true");
+registered=true;
+signalBtn.disabled=false;
+updateProfile();
+}
+
+let lastPrice=0;
+
+async function updateMarket(){
+const res=await fetch("https://api.binance.com/api/v3/ticker/price?symbol="+pair.value);
+const data=await res.json();
+
+const price=parseFloat(data.price);
+priceEl=price.toFixed(2);
+
+price.innerText=priceEl;
+
+let trend="LIVE 🟢";
+if(lastPrice){
+trend=price>lastPrice?"Bullish 🟢":"Bearish 🔴";
+}
+
+status.innerText=trend;
+lastPrice=price;
+}
+
+function getSignal(){
+if(!lastPrice)return;
+
+const signal=lastPrice%2>1?"BUY":"SELL";
+
+signalBox.innerHTML=signal==="BUY"
+?'<div class="signal-box buy">📈 BUY SIGNAL</div>'
+:'<div class="signal-box sell">📉 SELL SIGNAL</div>';
+}
+
+let sec=5;
+setInterval(()=>{
+sec--;
+if(sec<=0)sec=5;
+timer.innerText="Update "+sec+"s";
+},1000);
+
+setInterval(updateMarket,5000);
+updateMarket();
+
+let widget;
+
+function loadChart(){
+tvchart.innerHTML="";
+widget=new TradingView.widget({
+width:"100%",
+height:400,
+symbol:"BINANCE:"+pair.value,
+interval:timeframe.value,
+theme:"dark",
+style:"1",
+container_id:"tvchart"
+});
+}
+
+loadChart();
+
+pair.addEventListener("change",()=>{
+updateMarket();
+loadChart();
+});
+
+timeframe.addEventListener("change",loadChart);
 
 </script>
 
