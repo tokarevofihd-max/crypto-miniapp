@@ -58,6 +58,14 @@ cursor:pointer;
 .btn-primary{
 background:linear-gradient(135deg,#22c55e,#16a34a);
 }
+.btn-register{
+background:#1e293b;
+}
+button:disabled{
+opacity:0.5;
+cursor:not-allowed;
+background:#374151 !important;
+}
 .signal-box{
 margin-top:15px;
 padding:24px;
@@ -104,6 +112,11 @@ border-radius:12px;
 <div class="card">
 
 <div id="online" class="online">👥 Users online: 0</div>
+
+<div id="profile" class="profile"></div>
+
+<button id="regBtn" class="btn-register">👤 Registration</button>
+
 <div id="market" class="market">OTC market simulation</div>
 
 <label>Pair</label>
@@ -149,6 +162,29 @@ border-radius:12px;
 
 let lastPrice = 1 + Math.random();
 
+//// REGISTRATION LOGIC
+let registered = localStorage.getItem("registered") === "true";
+const signalBtn = document.getElementById("signalBtn");
+const profile = document.getElementById("profile");
+const regBtn = document.getElementById("regBtn");
+
+function updateProfile(){
+profile.innerHTML = registered
+? "👤 User<br>Status: ✅ Registered"
+: "👤 Guest<br>Status: ❌ Not registered";
+
+signalBtn.disabled = !registered;
+}
+
+updateProfile();
+
+regBtn.onclick = () => {
+registered = true;
+localStorage.setItem("registered","true");
+updateProfile();
+result.innerHTML="✅ Registration completed. You can now get signals.";
+};
+
 //// ONLINE
 function generateOnline(){
 function update(){
@@ -160,7 +196,7 @@ update();
 }
 generateOnline();
 
-//// FAKE MARKET PRICE
+//// FAKE MARKET
 function updateMarket(){
 lastPrice += (Math.random()-0.5)*0.01;
 market.innerHTML=`💰 Price: ${lastPrice.toFixed(4)}<br>📊 OTC simulated market`;
@@ -168,7 +204,7 @@ market.innerHTML=`💰 Price: ${lastPrice.toFixed(4)}<br>📊 OTC simulated mark
 setInterval(updateMarket,2000);
 updateMarket();
 
-//// FAKE CHART
+//// CHART
 const canvas = document.getElementById("chart");
 const ctx = canvas.getContext("2d");
 canvas.width = canvas.offsetWidth;
@@ -178,18 +214,15 @@ let points = Array(80).fill(lastPrice);
 
 function drawChart(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
-
 ctx.beginPath();
 ctx.lineWidth=2;
 ctx.strokeStyle="#22c55e";
-
 let step = canvas.width / points.length;
 points.forEach((p,i)=>{
 let y = canvas.height - (p*100);
 if(i===0) ctx.moveTo(i*step,y);
 else ctx.lineTo(i*step,y);
 });
-
 ctx.stroke();
 }
 
@@ -239,7 +272,6 @@ await new Promise(r=>setTimeout(r,500));
 }
 
 const price=lastPrice;
-
 const signal=Math.random()>0.5?"BUY":"SELL";
 const confidence=Math.floor(Math.random()*15)+80;
 const tp=(price*(1+(Math.random()*0.005))).toFixed(4);
