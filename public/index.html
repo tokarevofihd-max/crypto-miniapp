@@ -5,7 +5,6 @@
 <title>Crypto Signals PRO</title>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://s3.tradingview.com/tv.js"></script>
 
 <style>
 body{
@@ -87,6 +86,12 @@ border-radius:14px;
 margin-top:12px;
 line-height:1.6;
 }
+canvas{
+width:100%;
+height:400px;
+background:#020617;
+border-radius:12px;
+}
 </style>
 </head>
 
@@ -99,14 +104,23 @@ line-height:1.6;
 <div class="card">
 
 <div id="online" class="online">👥 Users online: 0</div>
-<div id="profile" class="profile"></div>
-<div id="market" class="market">Loading market...</div>
+<div id="market" class="market">OTC market simulation</div>
 
 <label>Pair</label>
 <select id="pair">
-<option>BTCUSDT</option>
-<option>ETHUSDT</option>
-<option>SOLUSDT</option>
+<option>AED/CNY OTC</option>
+<option>AUD/CAD OTC</option>
+<option>AUD/CHF OTC</option>
+<option>AUD/JPY OTC</option>
+<option>AUD/NZD OTC</option>
+<option>AUD/USD OTC</option>
+<option>BHD/CNY OTC</option>
+<option>CAD/CHF OTC</option>
+<option>CAD/JPY OTC</option>
+<option>CHF/JPY OTC</option>
+<option>CHF/NOK OTC</option>
+<option>EUR/CHF OTC</option>
+<option>EUR/GBP OTC</option>
 </select>
 
 <label>Timeframe</label>
@@ -126,15 +140,14 @@ line-height:1.6;
 </div>
 
 <div class="card">
-<div id="tvchart"></div>
+<canvas id="chart"></canvas>
 </div>
 
 </div>
 
 <script>
 
-let lastPrice=null;
-let widget;
+let lastPrice = 1 + Math.random();
 
 //// ONLINE
 function generateOnline(){
@@ -147,37 +160,50 @@ update();
 }
 generateOnline();
 
-//// CHART
-function loadChart(){
-if(widget) widget.remove();
-widget=new TradingView.widget({
-width:"100%",
-height:400,
-symbol:"BINANCE:"+pair.value,
-interval:"1",
-theme:"dark",
-container_id:"tvchart"
+//// FAKE MARKET PRICE
+function updateMarket(){
+lastPrice += (Math.random()-0.5)*0.01;
+market.innerHTML=`💰 Price: ${lastPrice.toFixed(4)}<br>📊 OTC simulated market`;
+}
+setInterval(updateMarket,2000);
+updateMarket();
+
+//// FAKE CHART
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
+canvas.width = canvas.offsetWidth;
+canvas.height = 400;
+
+let points = Array(80).fill(lastPrice);
+
+function drawChart(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.beginPath();
+ctx.lineWidth=2;
+ctx.strokeStyle="#22c55e";
+
+let step = canvas.width / points.length;
+points.forEach((p,i)=>{
+let y = canvas.height - (p*100);
+if(i===0) ctx.moveTo(i*step,y);
+else ctx.lineTo(i*step,y);
 });
+
+ctx.stroke();
 }
 
-//// MARKET
-async function updateMarket(){
-const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
-const data=await res.json();
-const price=parseFloat(data.price);
-
-let trend="Neutral";
-if(lastPrice){
-trend=price>lastPrice?"🟢 Bullish":"🔴 Bearish";
+function updateChart(){
+lastPrice += (Math.random()-0.5)*0.02;
+points.push(lastPrice);
+points.shift();
+drawChart();
 }
-lastPrice=price;
 
-market.innerHTML=`💰 Price: ${price.toFixed(2)}<br>📊 Market: ${trend}`;
-}
+setInterval(updateChart,1000);
 
 //// TIMER
 let timerInterval;
-
 function startTimer(){
 clearInterval(timerInterval);
 let seconds=parseInt(timeframe.value);
@@ -212,30 +238,21 @@ signalBox.innerHTML+=`<div class="ai-step">${step}</div>`;
 await new Promise(r=>setTimeout(r,500));
 }
 
-const res=await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${pair.value}`);
-const data=await res.json();
-const price=parseFloat(data.price);
+const price=lastPrice;
 
 const signal=Math.random()>0.5?"BUY":"SELL";
 const confidence=Math.floor(Math.random()*15)+80;
-const tp=(price*(1+(Math.random()*0.005))).toFixed(2);
-const sl=(price*(1-(Math.random()*0.005))).toFixed(2);
-const move=(Math.random()*0.7+0.2).toFixed(2);
+const tp=(price*(1+(Math.random()*0.005))).toFixed(4);
+const sl=(price*(1-(Math.random()*0.005))).toFixed(4);
 
 result.innerHTML=`
 <div class="ai-card">
 📊 MARKET ANALYSIS<br>
 Trend: ${signal==="BUY"?"🟢 Bullish":"🔴 Bearish"}<br>
-Momentum: High<br>
-Volume: Increasing<br>
-Volatility: Medium<br>
 Confidence: ${confidence}%<br><br>
-
-📍 Entry: ${price.toFixed(2)}<br>
+📍 Entry: ${price.toFixed(4)}<br>
 🎯 Take Profit: ${tp}<br>
-🛑 Stop Loss: ${sl}<br>
-Expected move: +${move}%<br>
-Risk Level: Low
+🛑 Stop Loss: ${sl}
 </div>
 `;
 
@@ -248,12 +265,6 @@ startTimer();
 }
 
 signalBtn.onclick=getSignal;
-
-pair.addEventListener("change",()=>{loadChart();updateMarket();});
-
-loadChart();
-updateMarket();
-setInterval(updateMarket,5000);
 
 </script>
 
