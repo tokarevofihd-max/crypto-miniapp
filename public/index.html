@@ -101,8 +101,6 @@ background:#020617;
 border-radius:12px;
 }
 
-/* POPUP */
-
 .popup-overlay{
 position:fixed;
 top:0;
@@ -123,22 +121,7 @@ padding:30px;
 border-radius:20px;
 width:320px;
 text-align:center;
-animation:fadeIn 0.3s ease;
 }
-
-.popup h2{
-margin-top:0;
-}
-
-.popup button{
-margin-top:20px;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:scale(0.9);}
-to{opacity:1;transform:scale(1);}
-}
-
 </style>
 </head>
 
@@ -151,7 +134,6 @@ to{opacity:1;transform:scale(1);}
 <div class="card">
 
 <div id="online" class="online">👥 Users online: 0</div>
-
 <div id="profile" class="profile"></div>
 
 <button id="regBtn" class="btn-register">👤 Registration</button>
@@ -160,19 +142,10 @@ to{opacity:1;transform:scale(1);}
 
 <label>Pair</label>
 <select id="pair">
-<option>AED/CNY OTC</option>
-<option>AUD/CAD OTC</option>
-<option>AUD/CHF OTC</option>
-<option>AUD/JPY OTC</option>
-<option>AUD/NZD OTC</option>
 <option>AUD/USD OTC</option>
-<option>BHD/CNY OTC</option>
-<option>CAD/CHF OTC</option>
+<option>EUR/GBP OTC</option>
 <option>CAD/JPY OTC</option>
 <option>CHF/JPY OTC</option>
-<option>CHF/NOK OTC</option>
-<option>EUR/CHF OTC</option>
-<option>EUR/GBP OTC</option>
 </select>
 
 <label>Timeframe</label>
@@ -197,12 +170,10 @@ to{opacity:1;transform:scale(1);}
 
 </div>
 
-<!-- POPUP -->
 <div id="popupOverlay" class="popup-overlay">
 <div class="popup">
 <h2>🚀 Join PRO Access</h2>
 <p>Unlock full AI signals</p>
-<p>✔ Real-time analysis<br>✔ OTC signals<br>✔ High accuracy</p>
 <button id="popupContinue" class="btn-primary">Continue registration</button>
 </div>
 </div>
@@ -226,21 +197,22 @@ profile.innerHTML = registered
 
 signalBtn.disabled = !registered;
 }
-
 updateProfile();
 
 regBtn.onclick = () => popup.style.display="flex";
 
 popupContinue.onclick = () => {
+
 registered = true;
 localStorage.setItem("registered","true");
-popup.style.display="none";
-updateProfile();
-result.innerHTML="✅ Registration completed. You can now get signals.";
-};
 
-popup.onclick = (e)=>{
-if(e.target.id==="popupOverlay") popup.style.display="none";
+updateProfile();
+popup.style.display="none";
+
+window.open("https://u3.shortink.io/register","_blank");
+
+result.innerHTML="✅ Registration completed. Return back to continue.";
+
 };
 
 //// ONLINE
@@ -313,38 +285,21 @@ timer.innerHTML="✅ Ready for next signal";
 //// AI SIGNAL
 async function getSignal(){
 
+if(!registered){
+popup.style.display="flex";
+return;
+}
+
 signalBtn.disabled=true;
 
-const steps=[
-"🤖 AI analyzing market data...",
-"✔ Checking trend strength",
-"✔ Scanning liquidity zones",
-"✔ Evaluating momentum",
-"✔ Risk model calculation"
-];
+signalBox.innerHTML="🤖 AI analyzing...";
 
-signalBox.innerHTML="";
-for(let step of steps){
-signalBox.innerHTML+=`<div class="ai-step">${step}</div>`;
-await new Promise(r=>setTimeout(r,500));
-}
+await new Promise(r=>setTimeout(r,1500));
 
 const price=lastPrice;
 const signal=Math.random()>0.5?"BUY":"SELL";
-const confidence=Math.floor(Math.random()*15)+80;
-const tp=(price*(1+(Math.random()*0.005))).toFixed(4);
-const sl=(price*(1-(Math.random()*0.005))).toFixed(4);
 
-result.innerHTML=`
-<div class="ai-card">
-📊 MARKET ANALYSIS<br>
-Trend: ${signal==="BUY"?"🟢 Bullish":"🔴 Bearish"}<br>
-Confidence: ${confidence}%<br><br>
-📍 Entry: ${price.toFixed(4)}<br>
-🎯 Take Profit: ${tp}<br>
-🛑 Stop Loss: ${sl}
-</div>
-`;
+result.innerHTML=`Entry: ${price.toFixed(4)}`;
 
 signalBox.innerHTML=signal==="BUY"
 ?'<div class="signal-box buy">📈 BUY SIGNAL</div>'
