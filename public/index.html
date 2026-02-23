@@ -100,6 +100,45 @@ height:400px;
 background:#020617;
 border-radius:12px;
 }
+
+/* POPUP */
+
+.popup-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(6px);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:999;
+}
+
+.popup{
+background:#020617;
+padding:30px;
+border-radius:20px;
+width:320px;
+text-align:center;
+animation:fadeIn 0.3s ease;
+}
+
+.popup h2{
+margin-top:0;
+}
+
+.popup button{
+margin-top:20px;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:scale(0.9);}
+to{opacity:1;transform:scale(1);}
+}
+
 </style>
 </head>
 
@@ -158,15 +197,27 @@ border-radius:12px;
 
 </div>
 
+<!-- POPUP -->
+<div id="popupOverlay" class="popup-overlay">
+<div class="popup">
+<h2>🚀 Join PRO Access</h2>
+<p>Unlock full AI signals</p>
+<p>✔ Real-time analysis<br>✔ OTC signals<br>✔ High accuracy</p>
+<button id="popupContinue" class="btn-primary">Continue registration</button>
+</div>
+</div>
+
 <script>
 
 let lastPrice = 1 + Math.random();
 
-//// REGISTRATION LOGIC
+//// REGISTRATION
 let registered = localStorage.getItem("registered") === "true";
 const signalBtn = document.getElementById("signalBtn");
 const profile = document.getElementById("profile");
 const regBtn = document.getElementById("regBtn");
+const popup = document.getElementById("popupOverlay");
+const popupContinue = document.getElementById("popupContinue");
 
 function updateProfile(){
 profile.innerHTML = registered
@@ -178,11 +229,18 @@ signalBtn.disabled = !registered;
 
 updateProfile();
 
-regBtn.onclick = () => {
+regBtn.onclick = () => popup.style.display="flex";
+
+popupContinue.onclick = () => {
 registered = true;
 localStorage.setItem("registered","true");
+popup.style.display="none";
 updateProfile();
 result.innerHTML="✅ Registration completed. You can now get signals.";
+};
+
+popup.onclick = (e)=>{
+if(e.target.id==="popupOverlay") popup.style.display="none";
 };
 
 //// ONLINE
